@@ -8,18 +8,28 @@
 <div class="content">
         <h1>White Wolf 3d</h1>
         <h2>Task Manager</h2>
+        {% if task | length < 1%}
+        <h3>There are no tasks... Create one here!</h3>
+        {% else %}
         <table>
             <tr>
                 <th>Task</th>
                 <th>Added</th>
                 <th>Actions</th>
             </tr>
+            {% for task in tasks %}
             <tr>
-                <td>Contents</td>
-                <td>Date</td>
-                <td>More</td>
+                <td>{{task.content}}</td>
+                <td>{{task.created.strftime("%Y-%m-%d")}}</td>
+                <td>
+                    <a href="/delete/{{task.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{task.id}}">Edit</a>
+                </td>
             </tr>
+            {% endfor %}
         </table>
+        {% endif %}
         <form action="">
             <input type="text" name="content" id="content">
             <input type="submit" value="Add Task" id="btn_add">
