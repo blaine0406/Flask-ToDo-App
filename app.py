@@ -22,7 +22,7 @@ class MyTask(db.Model):
     def __repr__(self) -> str:
         return f"Task {self.id}"
 
-### Routes
+### Routes to Webpages
 # Homepage
 @app.route('/', methods=["POST","GET"])
 def index():
@@ -43,6 +43,31 @@ def index():
         return render_template("index.html", tasks=tasks)
 
 
+# Delete an Item
+@app.route("/delete/<int:id>")
+def delete(id:int):
+    delete_task = MyTask.query.get_or_404(id)
+    try:
+        db.session.delete(delete_task)
+        db.session.commit()
+        return redirect("/")
+    except Exception as e:
+        return f"Error:{e}"
+
+
+# Update an Item
+@app.route("/edit/<int:id>", methods=["GET","POST"])
+def edit(id:int):
+    task = MyTask.query.get_or_404(id)
+    if request.method == "POST":
+        task.content = request.form('content')
+        try:
+            db.session.commit()
+            return redirect("/")
+        except Exception as e:
+            return f"Error:{e}"
+    else:
+        return render_template('edit.html', task=task)
 
 # Runner and debugger
 if __name__ in "__main__":
